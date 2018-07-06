@@ -1,0 +1,27 @@
+debug = true
+
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+  [entryPoints.http.redirect]
+    entryPoint = "https"
+
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.auth.forward]
+      trustForwardHeader = true
+      address = "https://auth.server:443"
+      [entryPoints.https.auth.forward.tls]
+        ca =  "/etc/traefik/crt/ca.pem"
+        cert = "/etc/traefik/crt/client.pem"
+        key = "/etc/traefik/crt/client.key"
+    # let the automagic self-signed certificate generation
+    [entryPoints.https.tls]
+
+[api]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+watch = true
