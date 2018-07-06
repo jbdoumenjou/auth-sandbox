@@ -1,0 +1,47 @@
+debug = true
+
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.http]
+    address = ":80"
+    [entryPoints.http.redirect]
+      entryPoint = "https"
+
+  [entryPoints.https]
+    address = ":443"
+    # let the automagic self-signed certificate generation
+    [entryPoints.https.tls]
+
+[api]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+watch = true
+
+
+[file]
+
+[backends]
+    [backends.backend1]
+        [backends.backend1.servers]
+            [backends.backend1.servers.server0]
+                url = "http://10.0.1.4:80"
+                weight = 50
+
+[frontends]
+    [frontends.frontend1]
+        backend = "backend1"
+        passHostHeader = true
+        [frontends.frontend1.routes]
+            [frontends.frontend1.routes.route_0]
+                rule = "Host:whoami"
+        [frontends.frontend1.auth]
+            headerField = "X-WebAuth-User"
+            [frontends.frontend1.auth.basic]
+                users = [
+                  "test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/",
+                  "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0",
+                ]
+                usersFile = "etc/traefik/.htpasswd"
+

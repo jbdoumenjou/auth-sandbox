@@ -1,0 +1,36 @@
+version: '3.5'
+services:
+
+  rproxy:
+    image: containous/traefik:latest                          # last locally build with make image-dirty
+    #image: traefik:1.6.4-alpine
+    volumes:
+      - ./traefik.toml:/etc/traefik/traefik.toml:ro           # træfik static configuration
+      - /var/run/docker.sock:/var/run/docker.sock             # So that traefik can listen to the Docker events
+      - ./.htpasswd:/etc/traefik/.htpasswd:ro                 # basic auth user/password file
+    ports:
+      - '443:443'                                             # https port
+      - '80:80'                                               # http port
+      - '8080:8080'                                           # for the træfik dashboard
+    labels:
+      - traefik.enable=false                                  # hide traefik from traefik
+    networks:
+      - net
+
+  api:
+    image: emilevauge/whoami
+    labels:
+      - traefik.port=80
+      - traefik.frontend.rule=Host:whoami
+    networks:
+      net:
+        ipv4_address: 10.0.1.4
+
+
+networks:
+  net:
+    name: "net"
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.0.1.0/28
