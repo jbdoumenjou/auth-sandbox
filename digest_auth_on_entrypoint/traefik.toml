@@ -1,0 +1,23 @@
+debug = true
+
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.http]
+    address = ":80"
+    [entryPoints.http.redirect]
+      entryPoint = "https"
+
+  [entryPoints.https]
+    address = ":443"
+    [entryPoints.http.auth.digest]
+      users = ["test:traefik:a2688e031edb4be6a3797f3882655c05", "test2:traefik:518845800f9e2bfb1f1f740ec24f074e"]
+      usersFile = "etc/traefik/.htdigest"
+    # let the automagic self-signed certificate generation
+    [entryPoints.https.tls]
+
+[api]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+watch = true
