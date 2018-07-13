@@ -22,6 +22,7 @@ services:
     labels:
       - traefik.port=80
       - traefik.frontend.rule=Host:whoami
+      - traefik.frontend.auth.basic.removeHeader=true
       - traefik.frontend.auth.basic.users=test:$$apr1$$XIa.krDC$$9vsk2Ir0p.UDpOIMXm8KZ.,test2:$$apr1$$H2xCjn3m$$lB54gyRV45hIQDZqGjNB9.
       - traefik.frontend.auth.basic.usersFile=/etc/traefik/.htpasswd
     networks:

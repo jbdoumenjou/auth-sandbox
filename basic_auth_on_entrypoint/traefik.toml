@@ -11,6 +11,7 @@ defaultEntryPoints = ["http", "https"]
   [entryPoints.https]
     address = ":443"
     [entryPoints.https.auth.basic]
+      removeHeader = true # remove the Authorization header
       users = ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/", "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
       usersFile = "etc/traefik/.htpasswd"
     # let the automagic self-signed certificate generation
